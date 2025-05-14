@@ -26,10 +26,12 @@ export class UserService {
     let users = userData;
 
     if (email) {
+      //console.log('In email' + email);
       users = users.filter((user) => user.email === email);
     }
 
     if (role) {
+      //console.log('In role: ' + role);
       users = users.filter((user) => user.role === role);
     }
 

@@ -1,7 +1,7 @@
 export enum UserRoleEnum {
-  EMPLOYEE,
-  CLIENT,
-  ADMIN,
+  EMPLOYEE = 'EMPLOYEE',
+  CLIENT = 'CLIENT',
+  ADMIN = 'ADMIN',
 }
 
 export type TUser = {
