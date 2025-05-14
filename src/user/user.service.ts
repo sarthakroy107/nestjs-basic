@@ -1,20 +1,23 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { data as userData } from 'lake';
-import { v4 as uuid } from 'uuid';
-import { TUser } from './user.model';
 import { FilterUserDto } from './dto/filter-user.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { UserRepository } from './repositories/user.repository';
+import { UserEntity } from './entities/user.entity';
 
 @Injectable()
 export class UserService {
-  create(createUserDto: CreateUserDto) {
-    const newUser = {
-      id: uuid(),
-      ...createUserDto,
-    };
+  constructor(
+    @InjectRepository(UserRepository) private userRepository: UserRepository,
+  ) {}
 
-    userData.push(newUser);
+  async createUser(createUserDto: CreateUserDto) {
+    const newUser = this.userRepository.create({
+      ...createUserDto,
+    });
+
+    await this.userRepository.save(newUser);
 
     return {
       message: 'User created',
@@ -22,8 +25,8 @@ export class UserService {
     };
   }
 
-  findAllUsers({ email, role }: FilterUserDto) {
-    let users = userData;
+  async findAllUsers({ email, role }: FilterUserDto): Promise<UserEntity[]> {
+    let users = await this.userRepository.find();
 
     if (email) {
       //console.log('In email' + email);
@@ -38,37 +41,32 @@ export class UserService {
     return users;
   }
 
-  findUserWithId(id: string): TUser {
-    const user = userData.find((user) => user.id === id);
+  async findUserWithId(id: string): Promise<UserEntity> {
+    const user = await this.userRepository.findOneBy({
+      id,
+    });
 
     if (!user) throw new NotFoundException();
 
     return user;
   }
 
-  private findUserIndexWthId(id: string): number {
-    const userIdx = userData.findIndex((user) => user.id === id);
+  async updateUser(id: string, updateUserDto: UpdateUserDto) {
+    const user = await this.findUserWithId(id);
 
-    if (userIdx === -1) throw new NotFoundException();
+    const updatedUser = { ...user, ...updateUserDto };
 
-    return userIdx;
-  }
-
-  updateUser(id: string, updateUserDto: UpdateUserDto) {
-    const userIdx = this.findUserIndexWthId(id);
-
-    userData[userIdx] = { ...userData[userIdx], ...updateUserDto };
-
+    await this.userRepository.save(updatedUser);
     return {
       message: 'User updated',
-      data: userData[userIdx],
+      data: updatedUser,
     };
   }
 
-  deleteUser(id: string) {
-    const userIdx = this.findUserIndexWthId(id);
+  async deleteUser(id: string) {
+    const user = await this.findUserWithId(id);
 
-    userData.splice(userIdx, 1);
+    await this.userRepository.remove(user);
 
     return { message: `Removed user with id: ${id}` };
   }
