@@ -5,6 +5,7 @@ import {
   IsNumber,
   IsString,
   Min,
+  MinLength,
 } from 'class-validator';
 import { UserRoleEnum } from '../user.model';
 
@@ -22,4 +23,8 @@ export class CreateUserDto {
 
   @IsEmail()
   email: string;
+
+  @IsString()
+  @MinLength(8)
+  password: string;
 }

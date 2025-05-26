@@ -9,7 +9,7 @@ export class UserEntity {
   @Column({ length: 50 })
   name: string;
 
-  @Column()
+  @Column({ unique: true })
   email: string;
 
   @Column('int')
@@ -17,4 +17,7 @@ export class UserEntity {
 
   @Column()
   role: UserRoleEnum;
+
+  @Column()
+  password: string;
 }
