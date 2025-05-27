@@ -1,0 +1,21 @@
+meta {
+  name: Update task
+  type: http
+  seq: 2
+}
+
+patch {
+  url: http://localhost:3000/tasks/577abbbe-2956-4e08-940d-f623e0ab78cd
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNhcnRoYWtAZ21haWwuY29tIiwiaWF0IjoxNzQ4MzQ0MjE3LCJleHAiOjE3NDgzNDc4MTd9.HwX4AhGEpp83cyjv36iPtkrzUwhxxlowM2OtKwOUbc8
+}
+
+body:json {
+  {
+    "body": "prismforce"
+  }
+}

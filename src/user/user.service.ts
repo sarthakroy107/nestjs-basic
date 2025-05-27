@@ -1,13 +1,15 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { FilterUserDto } from './dto/filter-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserRepository } from './repositories/user.repository';
-import { UserEntity } from './entities/user.entity';
 
 @Injectable()
 export class UserService {
+  private logger = new Logger('UserService');
   constructor(
     @InjectRepository(UserRepository) private userRepository: UserRepository,
   ) {}
@@ -18,14 +20,14 @@ export class UserService {
     });
 
     await this.userRepository.save(newUser);
-
+    const { password, ...safeNewUser } = newUser;
     return {
       message: 'User created',
-      data: newUser,
+      data: safeNewUser,
     };
   }
 
-  async findAllUsers({ email, role }: FilterUserDto): Promise<UserEntity[]> {
+  async findAllUsers({ email, role }: FilterUserDto) {
     let users = await this.userRepository.find();
 
     if (email) {
@@ -38,17 +40,17 @@ export class UserService {
       users = users.filter((user) => user.role === role);
     }
 
-    return users;
+    return users.map(({ password, ...safeUser }) => safeUser);
   }
 
-  async findUserWithId(id: string): Promise<UserEntity> {
+  async findUserWithId(id: string) {
     const user = await this.userRepository.findOneBy({
       id,
     });
 
     if (!user) throw new NotFoundException(`User with id ${id} not found`);
-
-    return user;
+    const { password, ...safeUser } = user;
+    return safeUser;
   }
 
   async updateUser(id: string, updateUserDto: UpdateUserDto) {
@@ -57,14 +59,22 @@ export class UserService {
     const updatedUser = { ...user, ...updateUserDto };
 
     await this.userRepository.save(updatedUser);
+    const { password, ...safeUpdatedUser } = updatedUser;
     return {
       message: 'User updated',
-      data: updatedUser,
+      data: safeUpdatedUser,
     };
   }
 
   async deleteUser(id: string) {
-    const user = await this.findUserWithId(id);
+    const user = await this.userRepository.findOne({
+      where: { id },
+    });
+
+    if (!user) {
+      this.logger.error(`User with id ${id} not found`);
+      throw new NotFoundException(`User with id ${id} not found`);
+    }
 
     await this.userRepository.remove(user);
 

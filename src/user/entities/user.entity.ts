@@ -1,6 +1,7 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { UserRoleEnum } from '../user.model';
 import { TaskEntity } from 'src/tasks/entities/task.entity';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class UserEntity {

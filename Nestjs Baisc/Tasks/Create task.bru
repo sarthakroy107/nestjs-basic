@@ -1,0 +1,21 @@
+meta {
+  name: Create task
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:3000/tasks
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNhcnRoYWtAZ21haWwuY29tIiwiaWF0IjoxNzQ4MzQ0MjE3LCJleHAiOjE3NDgzNDc4MTd9.HwX4AhGEpp83cyjv36iPtkrzUwhxxlowM2OtKwOUbc8
+}
+
+body:json {
+  {
+    "body": "nkdsnkdjnbc"
+  }
+}

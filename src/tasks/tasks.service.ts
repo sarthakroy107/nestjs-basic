@@ -19,7 +19,14 @@ export class TasksService {
 
     await this.taskRepository.save(newTask);
 
-    return { message: 'Task created successfully', data: newTask };
+    return {
+      message: 'Task created successfully',
+      data: {
+        taskId: newTask.id,
+        body: newTask.body,
+        userId: newTask.user.id,
+      },
+    };
   }
 
   async findAll(user: UserEntity) {

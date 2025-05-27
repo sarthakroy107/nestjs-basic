@@ -1,0 +1,15 @@
+meta {
+  name: Delete user
+  type: http
+  seq: 1
+}
+
+delete {
+  url: http://localhost:3000/user/167e3951-badc-4391-8cff-6faf79def705
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNhcnRoYWtAZ21haWwuY29tIiwiaWF0IjoxNzQ4MzQ0MjE3LCJleHAiOjE3NDgzNDc4MTd9.HwX4AhGEpp83cyjv36iPtkrzUwhxxlowM2OtKwOUbc8
+}

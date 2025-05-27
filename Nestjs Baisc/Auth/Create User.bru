@@ -1,0 +1,21 @@
+meta {
+  name: Create User
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:3000/auth/signup
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "Sarthak",
+    "email": "sarthak1@gmail.com",
+    "role": "ADMIN",
+    "age": 21,
+    "password": "12345678"
+  }
+}
