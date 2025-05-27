@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { UserRoleEnum } from '../user.model';
+import { TaskEntity } from 'src/tasks/entities/task.entity';
 
 @Entity()
 export class UserEntity {
@@ -20,4 +21,9 @@ export class UserEntity {
 
   @Column()
   password: string;
+
+  @OneToMany(() => TaskEntity, (task) => task.user, {
+    eager: true,
+  })
+  tasks: TaskEntity[];
 }
